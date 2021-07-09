@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,8 +54,12 @@ public class LoginController
 		StringBuffer protectedInfo = new StringBuffer();
 
 		OAuth2AuthenticationToken authToken = ((OAuth2AuthenticationToken) user);
+		
+		OAuth2User principal = ((OAuth2AuthenticationToken) user).getPrincipal();
+
 		OAuth2AuthorizedClient authClient = this.authorizedClientService
 				.loadAuthorizedClient(authToken.getAuthorizedClientRegistrationId(), authToken.getName());
+		
 		if (authToken.isAuthenticated()) {
 
 			Map<String, Object> userAttributes = ((DefaultOAuth2User) authToken.getPrincipal()).getAttributes();
@@ -64,6 +71,21 @@ public class LoginController
 		} else {
 			protectedInfo.append("NA");
 		}
+		
+		OidcIdToken idToken = getIdToken(principal);
+		
+		if(idToken != null) {
+
+			   protectedInfo.append("idToken value: " + idToken.getTokenValue()+"<br><br>");
+			   protectedInfo.append("Token mapped values <br><br>");
+			   
+			   Map<String, Object> claims = idToken.getClaims();
+
+			      for (String key : claims.keySet()) {
+			      protectedInfo.append("  " + key + ": " + claims.get(key)+"<br>");
+			      }
+			}
+		
 		return protectedInfo;
 	}
 
@@ -79,5 +101,13 @@ public class LoginController
 		}
 		return usernameInfo;
 	}
+	
+	private OidcIdToken getIdToken(OAuth2User principal){
+		   if(principal instanceof DefaultOidcUser) {
+		     DefaultOidcUser oidcUser = (DefaultOidcUser)principal;
+		     return oidcUser.getIdToken();
+		   }
+		   return null;
+		}
 
 }

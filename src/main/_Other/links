@@ -8,3 +8,5 @@ http://localhost:8081/login/oauth2/code/github
 b0cdd788c971149a6a97
 -- Client secret
 e737ce63635c14e5983310bc60fd5f253d4ff2d3
+-- Adresse authentification application Google
+https://console.cloud.google.com/apis/credentials
