@@ -1,0 +1,10 @@
+-- App link
+http://localhost:8081/
+-- Register a new OAuth application
+https://github.com/settings/applications/new
+-- Authorization callback URL 
+http://localhost:8081/login/oauth2/code/github
+-- Client ID
+b0cdd788c971149a6a97
+-- Client secret
+e737ce63635c14e5983310bc60fd5f253d4ff2d3

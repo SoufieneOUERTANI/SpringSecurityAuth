@@ -1,5 +1,7 @@
 package com.ouertani.login.controller;
 
+import java.security.Principal;
+
 import javax.annotation.security.RolesAllowed;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,17 +10,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController
 
 {
-   @RolesAllowed("USER")
-   @RequestMapping("/*")
-   public String getUser()
-   {
-      return "Welcome User";
-   }
+	@RolesAllowed("USER")
+	@RequestMapping("/**")
+	public String getUser() {
+		return "Welcome User";
+	}
 
-   @RolesAllowed({"USER","ADMIN"})
-   @RequestMapping("/admin")
-   public String getAdmin()
-   {
-      return "Welcome Admin";
-   }
+	@RolesAllowed({ "USER", "ADMIN" })
+	@RequestMapping("/admin")
+	public String getAdmin() {
+		return "Welcome Admin";
+	}
+
+	@RequestMapping("/*")
+	public String getGithub(Principal user) {
+		return "Welcome Github user!"
+				+ "+user.getName() : "
+				+ user.getName()
+				+ "+ user.toString() : "
+				+ user.toString();
+	}
 }
